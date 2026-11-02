@@ -1,9 +1,4 @@
-import {
-  UnifrakturCook,
-  Spectral,
-  Cinzel,
-  Share_Tech_Mono,
-} from "next/font/google";
+import { UnifrakturCook, Spectral, Cinzel } from "next/font/google";
 import "./globals.css";
 
 // Titoli gotici
@@ -28,13 +23,6 @@ const etichetta = Cinzel({
   variable: "--font-etichetta",
 });
 
-// Righe da terminale
-const mono = Share_Tech_Mono({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-mono",
-});
-
 export const metadata = {
   title: "Punto di Singolarità",
   description: "",
@@ -44,12 +32,12 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="it"
-      className={`${gotico.variable} ${testo.variable} ${etichetta.variable} ${mono.variable}`}
+      className={`${gotico.variable} ${testo.variable} ${etichetta.variable}`}
     >
       <body>
         {children}
         <footer className="piede">
-          <p>Un sistema indipendente dalle perturbazioni esterne</p>
+          <p>Frase del giorno: </p>
         </footer>
       </body>
     </html>
