@@ -6,10 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:init": "node --env-file=.env.local scripts/db-init.mjs",
+    "chiave": "node --env-file=.env.local scripts/imposta-chiave.mjs"
   },
   "dependencies": {
     "next": "16.4.3",
+    "postgres": "3.4.9",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },

@@ -1,20 +1,18 @@
 import { Suspense } from "react";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { tokenAccesso } from "../lib/accesso";
+import { verificaAccesso } from "../lib/sessione";
+import MappaStellare from "../MappaStellare";
+import { VOCI_MAPPA } from "../lib/mappa";
+import Singolarita from "../Singolarita";
 
-export const metadata = { title: "Welcome" };
+export const metadata = { title: "Singolarità" };
 
 // Leggere i cookie è "dinamico": con Cache Components va dentro Suspense
 async function Contenuto() {
-  const biscotti = await cookies();
-
-  // Senza la parola giusta si torna al cancello
-  if (biscotti.get("accesso")?.value !== tokenAccesso()) {
-    redirect("/");
-  }
+  // Senza identificazione e senza la rima giusta si torna all'ingresso
+  await verificaAccesso();
 
   return (
+    <>
     <section className="hero">
       <p
         className="riga-accesso"
@@ -37,7 +35,12 @@ async function Contenuto() {
       
       Qui, ogni traiettoria converge verso di noi.
       </p>
+
+      <MappaStellare voci={VOCI_MAPPA} />
     </section>
+
+    <Singolarita />
+    </>
   );
 }
 

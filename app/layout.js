@@ -5,6 +5,7 @@ import {
   Share_Tech_Mono,
 } from "next/font/google";
 import "./globals.css";
+import Cielo from "./Cielo";
 
 // Titoli gotici
 const gotico = UnifrakturCook({
@@ -47,6 +48,7 @@ export default function RootLayout({ children }) {
       className={`${gotico.variable} ${testo.variable} ${etichetta.variable} ${mono.variable}`}
     >
       <body>
+        <Cielo />
         {children}
         <footer className="piede">
           <p>Anche io con te voglio fare bene </p>
