@@ -1382,10 +1382,9 @@ h2,
 
 .terminale .digita {
   display: inline-block;
-  overflow: hidden;
   white-space: nowrap;
-  /* larghezza esatta: n caratteri monospace + spaziatura */
-  width: calc(var(--n) * (1ch + 0.06em));
+  /* Larghezza naturale: la digitazione la fa clip-path, così il testo
+     non viene mai tagliato, qualunque font carichi il browser */
 }
 
 /* Cursore a blocco */
@@ -1418,7 +1417,11 @@ h2,
 
 @keyframes digita {
   from {
-    width: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
   }
 }
 
