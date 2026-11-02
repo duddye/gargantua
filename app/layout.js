@@ -37,10 +37,7 @@ export default function RootLayout({ children }) {
       <body>
         {children}
         <footer className="piede">
-          <p>
-            <span className="frase-etichetta">Frase del giorno:</span>{" "}
-            <span className="frase-testo">anche io con te voglio fare bene</span>
-          </p>
+          <p>Anche io con te voglio fare bene </p>
         </footer>
       </body>
     </html>
