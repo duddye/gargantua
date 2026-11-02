@@ -1,26 +1,1800 @@
-@import "tailwindcss";
+/* =========================================
+   PALETTE
+   ========================================= */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --notte: #05050e;
+  --velluto: #0e0a20;
+  --indaco: #241356;
+  --viola: #1a1a5e;
+
+  --oro: #c9a45c;
+  --oro-chiaro: #ecd9a8;
+
+  --osso: #eee6d8;
+  --osso-dim: #a99fb3;
+
+  --brace: #ff7a50;
+  --lilla: #b9a2e6;
+
+  --linea: #6b3fc9;
+  --viola-scuro: #6b1fd6;
+  --viola-neon: #b026ff;
+
+  /* Unità del cielo: segue la finestra, non lo zoom del browser.
+     Con lo zoom 100vmax resta la stessa larghezza fisica, quindi le
+     stelle di sfondo non si ingrandiscono. ≈1px su uno schermo da 1500px */
+  --u: calc(100vmax / 1500);
+  --neon-magenta: #ff1fd2;
+  --neon-viola: #9b4dff;
+  --neon-rosa: #ff3d81;
+  --neon-giallo: #fff35c;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* =========================================
+   BASE
+   ========================================= */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+
+  background:
+    /* Stelle */
+    radial-gradient(calc(1.2 * var(--u)) calc(1.2 * var(--u)) at 12% 18%, #fff 50%, transparent 52%),
+    radial-gradient(calc(1 * var(--u)) calc(1 * var(--u)) at 27% 62%, #fff 50%, transparent 52%),
+    radial-gradient(calc(1.5 * var(--u)) calc(1.5 * var(--u)) at 41% 9%, var(--oro-chiaro) 50%, transparent 52%),
+    radial-gradient(calc(1 * var(--u)) calc(1 * var(--u)) at 55% 41%, #fff 50%, transparent 52%),
+    radial-gradient(calc(1.2 * var(--u)) calc(1.2 * var(--u)) at 68% 76%, #fff 50%, transparent 52%),
+    radial-gradient(calc(1.5 * var(--u)) calc(1.5 * var(--u)) at 79% 22%, var(--oro-chiaro) 50%, transparent 52%),
+    radial-gradient(calc(1 * var(--u)) calc(1 * var(--u)) at 90% 55%, #fff 50%, transparent 52%),
+    radial-gradient(calc(1 * var(--u)) calc(1 * var(--u)) at 8% 84%, #fff 50%, transparent 52%),
+    radial-gradient(calc(1.2 * var(--u)) calc(1.2 * var(--u)) at 47% 92%, #fff 50%, transparent 52%),
+    radial-gradient(calc(1 * var(--u)) calc(1 * var(--u)) at 94% 90%, #fff 50%, transparent 52%),
+
+    /* Nebulose */
+    radial-gradient(ellipse at 15% 0%, var(--indaco) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 70%, var(--viola) 0%, transparent 55%),
+
+    var(--notte);
+
+  background-attachment: fixed;
+
+  color: var(--osso);
+  font-family: var(--font-testo), Georgia, serif;
+  font-size: 1.125rem;
+  line-height: 1.8;
+  overflow-x: hidden;
+}
+
+/* =========================================
+   CIELO STELLATO
+   Strati di stelle ripetuti con passi diversi
+   (173, 257, 401 px…): sommati non mostrano
+   la ripetizione e riempiono tutto il cielo.
+   ========================================= */
+
+/* Stelle fisse, tre profondità */
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+body::before {
+  background-image:
+    /* Via Lattea: banda tenue in diagonale */
+    linear-gradient(
+      115deg,
+      transparent 28%,
+      rgba(185, 162, 230, 0.05) 40%,
+      rgba(176, 38, 255, 0.06) 48%,
+      rgba(255, 31, 210, 0.035) 55%,
+      transparent 68%
+    ),
+    radial-gradient(calc(0.64 * var(--u)) calc(0.64 * var(--u)) at 73.7% 25.0%, color-mix(in srgb, #ffe3f4 40%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(0.87 * var(--u)) calc(0.87 * var(--u)) at 88.4% 9.5%, color-mix(in srgb, #ffffff 50%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(0.64 * var(--u)) calc(0.64 * var(--u)) at 23.8% 60.0%, color-mix(in srgb, #ffffff 55%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(0.86 * var(--u)) calc(0.86 * var(--u)) at 54.4% 22.6%, color-mix(in srgb, #ffe3f4 56%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(0.95 * var(--u)) calc(0.95 * var(--u)) at 75.4% 16.6%, color-mix(in srgb, #fff6e0 50%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(0.66 * var(--u)) calc(0.66 * var(--u)) at 94.8% 34.0%, color-mix(in srgb, #ffffff 38%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(0.74 * var(--u)) calc(0.74 * var(--u)) at 34.7% 26.9%, color-mix(in srgb, #ffffff 37%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(1.07 * var(--u)) calc(1.07 * var(--u)) at 96.4% 38.1%, color-mix(in srgb, #e9e0ff 69%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(1.11 * var(--u)) calc(1.11 * var(--u)) at 87.8% 36.4%, color-mix(in srgb, #fff6e0 56%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(0.82 * var(--u)) calc(0.82 * var(--u)) at 23.3% 29.4%, color-mix(in srgb, #ffffff 53%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(1.23 * var(--u)) calc(1.23 * var(--u)) at 38.3% 45.4%, color-mix(in srgb, #ffffff 79%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(0.99 * var(--u)) calc(0.99 * var(--u)) at 21.5% 27.2%, color-mix(in srgb, #ffffff 83%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(0.84 * var(--u)) calc(0.84 * var(--u)) at 63.2% 53.3%, color-mix(in srgb, #ffe3f4 59%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(0.99 * var(--u)) calc(0.99 * var(--u)) at 98.0% 63.7%, color-mix(in srgb, #e9e0ff 69%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(1.26 * var(--u)) calc(1.26 * var(--u)) at 76.3% 6.5%, color-mix(in srgb, #ffe3f4 95%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(1.26 * var(--u)) calc(1.26 * var(--u)) at 27.2% 21.7%, color-mix(in srgb, #fff6e0 98%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(1.26 * var(--u)) calc(1.26 * var(--u)) at 65.2% 39.8%, color-mix(in srgb, #ffe3f4 97%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(1.17 * var(--u)) calc(1.17 * var(--u)) at 14.7% 74.0%, color-mix(in srgb, #e9e0ff 86%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(1.39 * var(--u)) calc(1.39 * var(--u)) at 89.0% 40.1%, color-mix(in srgb, #ffe3f4 77%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(1.35 * var(--u)) calc(1.35 * var(--u)) at 9.9% 5.6%, color-mix(in srgb, #ffffff 73%, transparent) 50%, transparent 52%);
+  background-size: 100% 100%, calc(173 * var(--u)) calc(173 * var(--u)), calc(173 * var(--u)) calc(173 * var(--u)), calc(173 * var(--u)) calc(173 * var(--u)), calc(173 * var(--u)) calc(173 * var(--u)), calc(173 * var(--u)) calc(173 * var(--u)), calc(173 * var(--u)) calc(173 * var(--u)), calc(173 * var(--u)) calc(173 * var(--u)), calc(257 * var(--u)) calc(257 * var(--u)), calc(257 * var(--u)) calc(257 * var(--u)), calc(257 * var(--u)) calc(257 * var(--u)), calc(257 * var(--u)) calc(257 * var(--u)), calc(257 * var(--u)) calc(257 * var(--u)), calc(257 * var(--u)) calc(257 * var(--u)), calc(257 * var(--u)) calc(257 * var(--u)), calc(401 * var(--u)) calc(401 * var(--u)), calc(401 * var(--u)) calc(401 * var(--u)), calc(401 * var(--u)) calc(401 * var(--u)), calc(401 * var(--u)) calc(401 * var(--u)), calc(401 * var(--u)) calc(401 * var(--u)), calc(401 * var(--u)) calc(401 * var(--u));
+}
+
+/* Stelle che scintillano */
+
+body::after {
+  background-image:
+    radial-gradient(calc(1.31 * var(--u)) calc(1.31 * var(--u)) at 67.7% 59.4%, color-mix(in srgb, #ffe3f4 88%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(1.9 * var(--u)) calc(1.9 * var(--u)) at 52.9% 96.2%, color-mix(in srgb, #d9c8ff 97%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(1.68 * var(--u)) calc(1.68 * var(--u)) at 12.2% 87.7%, color-mix(in srgb, #ffffff 95%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(1.65 * var(--u)) calc(1.65 * var(--u)) at 11.9% 43.6%, color-mix(in srgb, #fff6e0 89%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(1.81 * var(--u)) calc(1.81 * var(--u)) at 26.8% 50.1%, color-mix(in srgb, #ffe3f4 84%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(2.11 * var(--u)) calc(2.11 * var(--u)) at 30.2% 63.6%, color-mix(in srgb, #ffffff 96%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(1.76 * var(--u)) calc(1.76 * var(--u)) at 16.8% 94.4%, color-mix(in srgb, #ffffff 99%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(1.92 * var(--u)) calc(1.92 * var(--u)) at 48.9% 12.0%, color-mix(in srgb, #ffffff 94%, transparent) 50%, transparent 52%),
+    radial-gradient(calc(2.06 * var(--u)) calc(2.06 * var(--u)) at 24.5% 24.6%, color-mix(in srgb, #fff6e0 96%, transparent) 50%, transparent 52%);
+  background-size: calc(313 * var(--u)) calc(313 * var(--u)), calc(313 * var(--u)) calc(313 * var(--u)), calc(313 * var(--u)) calc(313 * var(--u)), calc(313 * var(--u)) calc(313 * var(--u)), calc(313 * var(--u)) calc(313 * var(--u)), calc(487 * var(--u)) calc(487 * var(--u)), calc(487 * var(--u)) calc(487 * var(--u)), calc(487 * var(--u)) calc(487 * var(--u)), calc(487 * var(--u)) calc(487 * var(--u));
+  animation: scintilla 5.5s ease-in-out infinite alternate;
+}
+
+@keyframes scintilla {
+  0%   { opacity: 0.25; }
+  35%  { opacity: 0.9; }
+  55%  { opacity: 0.45; }
+  100% { opacity: 1; }
+}
+
+/* =========================================
+   CASSIOPEA (nascosta)
+   Dentro l'SVG di Orione, in alto a destra, nella
+   direzione vera rispetto a Orione. Cinque stelle
+   a W poco più luminose dello sfondo; ogni ~40 s la
+   W si disegna per un attimo e poi svanisce.
+   ========================================= */
+
+/* Contenitore: Orione e Cassiopea sovrapposti con lo stesso
+   sistema di coordinate, ma in due SVG distinti */
+
+.cielo-orione {
+  position: relative;
+}
+
+.cassiopea-cielo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.cassiopea circle {
+  fill: #fff4ea;
+  filter:
+    drop-shadow(0 0 1px #fff)
+    drop-shadow(0 0 3px rgba(185, 162, 230, 0.7));
+}
+
+.cassiopea-linea {
+  fill: none;
+  stroke: var(--lilla);
+  stroke-width: 0.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cassiopea circle {
+    animation: scintilla 4.5s ease-in-out infinite alternate;
+  }
+
+  .cassiopea circle:nth-of-type(2n) {
+    animation-duration: 6s;
+    animation-delay: -2s;
+  }
+
+  .cassiopea-linea {
+    animation: cassiopea-rivela 40s ease-in-out 12s infinite;
+  }
+}
+
+@keyframes cassiopea-rivela {
+  0%, 82% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+
+  88% {
+    stroke-dashoffset: 0;
+    opacity: 0.45;
+  }
+
+  94% {
+    stroke-dashoffset: 0;
+    opacity: 0.45;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+a {
+  color: var(--oro-chiaro);
+  text-underline-offset: 4px;
+}
+
+a:hover {
+  color: var(--viola-scuro);
+}
+
+:focus-visible {
+  outline: 2px solid var(--oro-chiaro);
+  outline-offset: 4px;
+}
+
+main,
+.piede {
+  width: min(100% - 2rem, 46rem);
+  margin-inline: auto;
+}
+
+/* =========================================
+   TITOLI
+   ========================================= */
+
+h1,
+h2,
+.frase {
+  font-family: var(--font-gotico), serif;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 2.25rem;
+  color: var(--oro);
+  margin-bottom: 1.5rem;
+}
+
+h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+/* =========================================
+   HERO
+   ========================================= */
+
+.hero {
+  padding-block: 5rem 6rem;
+  text-align: center;
+}
+
+.data-live {
+  font-family: var(--font-etichetta), serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.12em;
+  color: var(--oro);
+  margin-bottom: 1rem;
+}
+
+.titolo {
+  font-size: clamp(3.2rem, 13vw, 7rem);
+  line-height: 1.05;
+
+  filter:
+    drop-shadow(0 0 14px rgba(201, 164, 92, 0.5))
+    drop-shadow(0 0 40px rgba(201, 164, 92, 0.2));
+
+  margin-bottom: 1.5rem;
+}
+
+/* Titolo lungo su una riga sola: più piccolo e senza a capo */
+
+.titolo-riga {
+  font-size: clamp(1.15rem, 5.2vw, 2.7rem);
+  white-space: nowrap;
+}
+
+/* Niente glitch: resta solo il lampo neon che la attraversa.
+   (Le fette glitch non ci sono perché manca data-testo.) */
+
+@media (prefers-reduced-motion: no-preference) {
+  .titolo.titolo-riga {
+    animation:
+      comparsa 1.4s ease-out 1.3s both,
+      neon 6s cubic-bezier(0.7, 0, 0.3, 1) 3s infinite;
+  }
+}
+
+.sottotitolo {
+  color: var(--osso-dim);
+  font-style: italic;
+  max-width: 32rem;
+  margin: 0 auto 2.5rem;
+}
+
+/* =========================================
+   BOTTONE
+   ========================================= */
+
+.bottone {
+  display: inline-block;
+
+  font-family: var(--font-etichetta), serif;
+  font-size: 1.15rem;
+  letter-spacing: 0.1em;
+
+  color: var(--oro-chiaro);
+  text-decoration: none;
+
+  padding: 0.7rem 2.25rem;
+
+  background: transparent;
+  border: 1px solid var(--oro);
+  border-radius: 0;
+
+  transition:
+    background 0.25s,
+    color 0.25s,
+    box-shadow 0.25s;
+}
+
+.bottone:hover {
+  background: var(--viola-neon);
+  color: #fff;
+}
+
+button.bottone {
+  background: transparent;
+  cursor: pointer;
+}
+
+button.bottone {
+  border-color: var(--viola-neon);
+  color: #f0dcff;
+  text-shadow: 0 0 6px rgba(176, 38, 255, 0.9);
+  box-shadow:
+    0 0 8px rgba(176, 38, 255, 0.75),
+    0 0 22px rgba(176, 38, 255, 0.35),
+    inset 0 0 10px rgba(176, 38, 255, 0.35);
+}
+
+button.bottone:hover:not(:disabled) {
+  background: var(--viola-neon);
+  color: #fff;
+  box-shadow:
+    -3px 0 0 var(--neon-magenta),
+    3px 0 0 var(--viola-scuro),
+    0 0 26px rgba(176, 38, 255, 0.9);
+}
+
+button.bottone:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+/* =========================================
+   CANCELLO
+   ========================================= */
+
+.cancello {
+  min-height: 80vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 1.5rem;
+  text-align: center;
+  padding-block: 3rem;
+}
+
+/* =========================================
+   FRASE E INPUT
+   ========================================= */
+
+.frase {
+  font-size: clamp(1.9rem, 7vw, 3.2rem);
+  line-height: 1.4;
+
+  filter: drop-shadow(0 0 16px rgba(201, 164, 92, 0.3));
+}
+
+.frase input {
+  font: inherit;
+  color: var(--oro-chiaro);
+  text-align: center;
+  text-shadow: none;
+  caret-color: var(--oro-chiaro);
+
+  background: transparent;
+
+  /* Nessun riquadro: solo la linea viola neon su cui scrivere */
+  border: none;
+  border-bottom: 2px solid var(--viola-neon);
+  border-radius: 0;
+  box-shadow: 0 6px 12px -6px rgba(176, 38, 255, 0.9);
+
+  min-width: 5ch;
+  width: 9ch;
+
+  outline: none;
+}
+
+.frase input:focus {
+  box-shadow: 0 8px 18px -6px rgba(176, 38, 255, 1);
+}
+
+.frase input:disabled {
+  opacity: 0.7;
+}
+
+@supports (field-sizing: content) {
+  .frase input {
+    field-sizing: content;
+    width: auto;
+  }
+}
+
+.istruzione {
+  font-family: var(--font-etichetta), serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+  color: var(--osso-dim);
+}
+
+/* Testo solo per screen reader */
+
+.solo-lettori {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* =========================================
+   ERRORE: L'ILLUMINAZIONE ARROSSISCE
+   data-errore alterna "a"/"b" a ogni tentativo,
+   così l'animazione riparte ogni volta
+   ========================================= */
+
+.cancello[data-errore="a"] .costellazione {
+  animation: costellazione-rossa-a 1.8s ease-out;
+}
+
+.cancello[data-errore="b"] .costellazione {
+  animation: costellazione-rossa-b 1.8s ease-out;
+}
+
+.cancello[data-errore="a"] .frase input {
+  animation: testo-rosso-a 1.8s ease-out;
+}
+
+.cancello[data-errore="b"] .frase input {
+  animation: testo-rosso-b 1.8s ease-out;
+}
+
+.cancello[data-errore="a"] .bottone {
+  animation: bordo-rosso-a 1.8s ease-out;
+}
+
+.cancello[data-errore="b"] .bottone {
+  animation: bordo-rosso-b 1.8s ease-out;
+}
+
+@keyframes costellazione-rossa-a {
+  0% {
+    transform: translateX(-4px);
+    filter: grayscale(1) sepia(1) saturate(9) hue-rotate(-40deg)
+      brightness(1.4) drop-shadow(0 0 14px #ff1a3c);
+  }
+  6%  { transform: translateX(4px); }
+  12% { transform: translateX(-3px); }
+  18% { transform: translateX(2px); }
+  24% { transform: none; }
+  55% {
+    filter: grayscale(1) sepia(1) saturate(9) hue-rotate(-40deg)
+      brightness(1.15) drop-shadow(0 0 10px #ff1a3c);
+  }
+  100% {
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes costellazione-rossa-b {
+  0% {
+    transform: translateX(-4px);
+    filter: grayscale(1) sepia(1) saturate(9) hue-rotate(-40deg)
+      brightness(1.4) drop-shadow(0 0 14px #ff1a3c);
+  }
+  6%  { transform: translateX(4px); }
+  12% { transform: translateX(-3px); }
+  18% { transform: translateX(2px); }
+  24% { transform: none; }
+  55% {
+    filter: grayscale(1) sepia(1) saturate(9) hue-rotate(-40deg)
+      brightness(1.15) drop-shadow(0 0 10px #ff1a3c);
+  }
+  100% {
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes testo-rosso-a {
+  0%, 55% {
+    color: #ff6b81;
+    caret-color: #ff1a3c;
+    border-bottom-color: #ff1a3c;
+    box-shadow: 0 8px 18px -6px rgba(255, 26, 60, 0.9);
+  }
+}
+
+@keyframes testo-rosso-b {
+  0%, 55% {
+    color: #ff6b81;
+    caret-color: #ff1a3c;
+    border-bottom-color: #ff1a3c;
+    box-shadow: 0 8px 18px -6px rgba(255, 26, 60, 0.9);
+  }
+}
+
+@keyframes bordo-rosso-a {
+  0%, 55% {
+    color: #ff6b81;
+    border-color: #ff1a3c;
+    box-shadow: 0 0 16px rgba(255, 26, 60, 0.75);
+  }
+}
+
+@keyframes bordo-rosso-b {
+  0%, 55% {
+    color: #ff6b81;
+    border-color: #ff1a3c;
+    box-shadow: 0 0 16px rgba(255, 26, 60, 0.75);
+  }
+}
+
+.stato-successo {
+  font-family: var(--font-etichetta), serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  color: var(--viola-scuro);
+
+  text-shadow:
+    0 0 8px rgba(107, 31, 214, 0.8),
+    0 0 20px rgba(143, 107, 255, 0.5);
+
+  animation: comparsa-successo 0.6s ease-out both;
+}
+
+@keyframes comparsa-successo {
+  from {
+    opacity: 0;
+    letter-spacing: 0.5em;
+  }
+
+  to {
+    opacity: 1;
+    letter-spacing: 0.2em;
+  }
+}
+
+/* =========================================
+   COSTELLAZIONE DI ORIONE
+   ========================================= */
+
+.costellazione {
+  display: block;
+  width: min(76vw, 300px);
+  height: auto;
+  overflow: visible;
+
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* =========================================
+   STELLE
+   ========================================= */
+
+/* Stelle minori: più piccole di luce, quasi sullo sfondo */
+
+.stella {
+  fill: #c4b5e8;
+  opacity: 1;
+
+  filter:
+    drop-shadow(0 0 1.5px rgba(107, 63, 201, 0.7));
+
+  transition:
+    fill 0.4s ease,
+    filter 0.4s ease;
+}
+
+/* Betelgeuse: rossa */
+
+.costellazione .stella-betelgeuse {
+  fill: #ffd6e8;
+
+  filter:
+    drop-shadow(0 0 2px #ffffff)
+    drop-shadow(0 0 6px var(--neon-magenta))
+    drop-shadow(0 0 14px var(--neon-rosa))
+    drop-shadow(0 0 28px rgba(255, 31, 210, 0.75))
+    drop-shadow(0 0 46px rgba(155, 77, 255, 0.5));
+}
+
+/* Stelle principali: nucleo bianco, alone fucsia e viola scuro */
+
+.costellazione .stella-rigel,
+.costellazione .stella-bellatrix,
+.costellazione .stella-meissa,
+.costellazione .stella-saiph,
+.costellazione .stella-alnitak,
+.costellazione .stella-alnilam,
+.costellazione .stella-mintaka {
+  fill: #ffffff;
+
+  filter:
+    drop-shadow(0 0 1.5px #ffffff)
+    drop-shadow(0 0 4px var(--neon-magenta))
+    drop-shadow(0 0 10px var(--viola-scuro))
+    drop-shadow(0 0 22px rgba(255, 31, 210, 0.6))
+    drop-shadow(0 0 36px rgba(155, 77, 255, 0.45));
+}
+
+/* Rigel: la più brillante, alone viola scuro intenso */
+
+.costellazione .stella-rigel {
+  fill: #f1e8ff;
+
+  filter:
+    drop-shadow(0 0 2px #ffffff)
+    drop-shadow(0 0 6px var(--viola-scuro))
+    drop-shadow(0 0 14px var(--neon-magenta))
+    drop-shadow(0 0 30px rgba(107, 31, 214, 0.7))
+    drop-shadow(0 0 48px rgba(155, 77, 255, 0.5));
+}
+
+/* Cintura: fucsia acceso */
+
+.costellazione .stella-alnitak,
+.costellazione .stella-alnilam,
+.costellazione .stella-mintaka {
+  filter:
+    drop-shadow(0 0 2px #ffffff)
+    drop-shadow(0 0 6px var(--neon-magenta))
+    drop-shadow(0 0 14px var(--neon-magenta))
+    drop-shadow(0 0 26px var(--viola-scuro))
+    drop-shadow(0 0 44px rgba(155, 77, 255, 0.55));
+}
+
+/* =========================================
+   NUMERI DELLE STELLE
+   ========================================= */
+
+.numero-stella {
+  fill: var(--oro-chiaro);
+
+  font-family: var(--font-mono), monospace;
+  font-size: 2.2px;
+  font-weight: 600;
+
+  opacity: 0.85;
+  pointer-events: none;
+
+  filter:
+    drop-shadow(0 0 2px rgba(201, 164, 92, 0.7));
+}
+
+/* =========================================
+   LINEE ORIGINALI
+   ========================================= */
+
+.costellazione > line {
+  fill: none;
+
+  stroke: var(--linea);
+  stroke-width: 0.7;
+  stroke-linecap: round;
+
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+
+  .costellazione > line {
+    animation:
+      linea-a var(--t, 10s) ease-in-out var(--d, 0s) infinite;
+  }
+
+  .costellazione > line[data-v="b"] {
+    animation-name: linea-b;
+  }
+
+  .costellazione > line[data-v="c"] {
+    animation-name: linea-c;
+  }
+
+  .stella {
+    opacity: 0;
+    animation: accendi 1.4s ease-out forwards;
+    animation-delay: calc(0.2s + var(--i, 0) * 0.09s);
+  }
+}
+
+/* =========================================
+   ANIMAZIONI DELLE LINEE ORIGINALI
+   ========================================= */
+
+@keyframes accendi {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Si traccia, rimane, si cancella */
+
+@keyframes linea-a {
+  0%, 12% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+
+  28%, 62% {
+    stroke-dashoffset: 0;
+    opacity: 0.8;
+  }
+
+  78%, 100% {
+    stroke-dashoffset: -1;
+    opacity: 0;
+  }
+}
+
+/* Lampo breve */
+
+@keyframes linea-b {
+  0%, 30% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+
+  45%, 58% {
+    stroke-dashoffset: 0;
+    opacity: 0.9;
+  }
+
+  72%, 100% {
+    stroke-dashoffset: -1;
+    opacity: 0;
+  }
+}
+
+/* Quasi sempre accesa */
+
+@keyframes linea-c {
+  0%, 4% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+
+  16%, 82% {
+    stroke-dashoffset: 0;
+    opacity: 0.7;
+  }
+
+  94%, 100% {
+    stroke-dashoffset: -1;
+    opacity: 0;
+  }
+}
+
+/* =========================================
+   ACCESSO — GLI ARCHI DI ORIONE SI ACCENDONO
+   Solo con la parola giusta: ogni arco definito
+   si traccia in sequenza, poi pulsa al neon.
+   ========================================= */
+
+.cancello[data-success="true"] .costellazione > line {
+  --c: var(--viola-scuro);
+
+  stroke: #fff;
+  stroke-width: 0.95;
+  stroke-dashoffset: 1;
+  opacity: 1;
+
+  filter:
+    drop-shadow(0 0 0.6px #fff)
+    drop-shadow(0 0 2.5px var(--c))
+    drop-shadow(0 0 7px var(--c));
+
+  animation:
+    traccia-arco 0.45s cubic-bezier(0.2, 0.9, 0.3, 1) var(--s, 0s) forwards,
+    arco-acceso 1.4s ease-in-out
+      calc(var(--fine-tracciato, 2s) + var(--s, 0s) * 0.4) infinite;
+}
+
+.cancello[data-success="true"] .costellazione > line[data-v="b"] {
+  --c: var(--neon-magenta);
+}
+
+.cancello[data-success="true"] .costellazione > line[data-v="c"] {
+  --c: var(--neon-viola);
+}
+
+/* La "testa" dell'arco è bianca, poi prende il colore */
+
+@keyframes traccia-arco {
+  0% {
+    stroke: #fff;
+    stroke-dashoffset: 1;
+    stroke-width: 1.4;
+  }
+
+  70% {
+    stroke: #fff;
+  }
+
+  100% {
+    stroke: var(--c);
+    stroke-dashoffset: 0;
+    stroke-width: 0.95;
+  }
+}
+
+/* Onda di luce che corre lungo la figura */
+
+@keyframes arco-acceso {
+  0%, 100% {
+    stroke: var(--c);
+    stroke-width: 0.95;
+  }
+
+  50% {
+    stroke: #fff;
+    stroke-width: 1.25;
+  }
+}
+
+/* =========================================
+   STELLE IN SOVRACCARICO
+   ========================================= */
+
+.cancello[data-success="true"] .stella {
+  opacity: 1;
+  transform-box: fill-box;
+  transform-origin: center;
+
+  filter:
+    drop-shadow(0 0 3px #ffffff)
+    drop-shadow(0 0 9px var(--viola-scuro))
+    drop-shadow(0 0 18px var(--neon-viola));
+
+  animation: stella-pulsa 1.4s ease-in-out
+    calc(var(--fine-tracciato, 2s) + var(--i, 0) * 0.06s) infinite;
+}
+
+.cancello[data-success="true"] .stella-betelgeuse {
+  filter:
+    drop-shadow(0 0 3px #ffffff)
+    drop-shadow(0 0 10px var(--neon-magenta))
+    drop-shadow(0 0 24px var(--neon-rosa));
+}
+
+.cancello[data-success="true"] .stella-alnitak,
+.cancello[data-success="true"] .stella-alnilam,
+.cancello[data-success="true"] .stella-mintaka {
+  filter:
+    drop-shadow(0 0 4px #ffffff)
+    drop-shadow(0 0 12px var(--viola-scuro))
+    drop-shadow(0 0 26px var(--neon-viola))
+    drop-shadow(0 0 42px var(--neon-magenta));
+}
+
+@keyframes stella-pulsa {
+  0%, 100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.35);
+  }
+}
+
+/* =========================================
+   GLITCH DELLA COSTELLAZIONE + BAGLIORE
+   Parte quando l'ultimo arco è tracciato
+   ========================================= */
+
+.cancello[data-success="true"] .costellazione {
+  animation:
+    glitch-orione 0.7s steps(1, end) var(--fine-tracciato, 2s) 1,
+    bagliore-finale 1.2s ease-out calc(var(--fine-tracciato, 2s) + 0.7s) forwards;
+}
+
+@keyframes glitch-orione {
+  0% {
+    transform: translate(-4px, 1px) skewX(-4deg);
+    filter:
+      drop-shadow(4px 0 var(--neon-magenta))
+      drop-shadow(-4px 0 var(--viola-scuro))
+      brightness(1.6);
+  }
+
+  15% {
+    transform: translate(4px, -1px) skewX(3deg);
+    filter: drop-shadow(-5px 0 var(--viola-scuro)) hue-rotate(60deg);
+  }
+
+  30% {
+    transform: translate(-2px, 0) scaleX(1.04);
+    filter:
+      drop-shadow(3px 0 var(--neon-giallo))
+      drop-shadow(-3px 0 var(--neon-magenta));
+  }
+
+  45% {
+    transform: translate(3px, 2px) skewX(-2deg);
+    filter: drop-shadow(0 0 14px var(--neon-viola)) brightness(2);
+  }
+
+  60% {
+    transform: translate(-4px, -1px);
+    filter:
+      drop-shadow(5px 0 var(--viola-scuro))
+      drop-shadow(-5px 0 var(--neon-magenta))
+      hue-rotate(-40deg);
+  }
+
+  80% {
+    transform: translate(2px, 0) skewX(1deg);
+    filter: drop-shadow(0 0 18px var(--viola-scuro)) brightness(1.8);
+  }
+
+  100% {
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes bagliore-finale {
+  0% {
+    filter: brightness(1);
+  }
+
+  40% {
+    filter:
+      brightness(2.2)
+      drop-shadow(0 0 16px var(--viola-scuro))
+      drop-shadow(0 0 30px var(--neon-magenta));
+  }
+
+  100% {
+    filter:
+      brightness(1.35)
+      drop-shadow(0 0 12px var(--viola-scuro));
+  }
+}
+
+/* =========================================
+   LAMPO DI ACCESSO
+   Flash a schermo intero con scanline,
+   poi sfuma nel buio e si entra
+   ========================================= */
+
+.lampo-accesso {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0;
+
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.28) 0 2px,
+      transparent 2px 4px
+    ),
+    radial-gradient(
+      circle at 50% 38%,
+      #ffffff 0%,
+      var(--viola-scuro) 22%,
+      var(--neon-magenta) 48%,
+      var(--viola) 70%,
+      var(--notte) 90%
+    );
+
+  animation: lampo-accesso 0.85s ease-in
+    calc(var(--fine-tracciato, 2s) + 0.75s) forwards;
+}
+
+@keyframes lampo-accesso {
+  0% {
+    opacity: 0;
+    filter: brightness(1);
+  }
+
+  8% {
+    opacity: 0.9;
+  }
+
+  14% {
+    opacity: 0.15;
+  }
+
+  22% {
+    opacity: 1;
+    filter: brightness(1.4);
+  }
+
+  100% {
+    opacity: 1;
+    filter: brightness(0.06);
+  }
+}
+
+/* =========================================
+   NEON CHE ATTRAVERSA LE SCRITTE
+   Un lampo rapido (magenta → viola scuro → bianco → giallo)
+   e, nello stesso istante, un glitch RGB
+   ========================================= */
+
+.titolo {
+  --base: #f6efff;
+  --glow:
+    drop-shadow(0 0 10px rgba(107, 31, 214, 0.45))
+    drop-shadow(0 0 32px rgba(255, 31, 210, 0.3));
+}
+
+.frase {
+  --base: var(--osso);
+  --glow:
+    drop-shadow(0 0 12px rgba(107, 31, 214, 0.35))
+    drop-shadow(0 0 26px rgba(155, 77, 255, 0.25));
+}
+
+h2 {
+  --base: var(--oro-chiaro);
+  --glow: drop-shadow(0 0 10px rgba(255, 31, 210, 0.35));
+}
+
+.data-live {
+  --base: var(--oro-chiaro);
+  --glow: drop-shadow(0 0 6px rgba(107, 31, 214, 0.4));
+}
+
+.istruzione {
+  --base: var(--osso-dim);
+  --glow: drop-shadow(0 0 6px rgba(155, 77, 255, 0.4));
+}
+
+.titolo,
+.frase,
+h2,
+.data-live,
+.istruzione {
+  filter: var(--glow);
+}
+
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+
+  .titolo,
+  .frase,
+  h2,
+  .data-live,
+  .istruzione {
+    background-image: linear-gradient(
+      100deg,
+      var(--base) 0 42%,
+      var(--neon-magenta) 45%,
+      var(--viola-scuro) 47.5%,
+      #fff 49%,
+      var(--neon-giallo) 50%,
+      #fff 51%,
+      var(--viola-scuro) 52.5%,
+      var(--neon-viola) 55%,
+      var(--base) 58% 100%
+    );
+
+    background-size: 300% 100%;
+    background-position: 100% 0;
+    background-repeat: no-repeat;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+
+  .titolo,
+  .frase,
+  h2,
+  .data-live,
+  .istruzione {
+    animation:
+      neon 6s cubic-bezier(0.7, 0, 0.3, 1) infinite,
+      glitch-testo 6s steps(1, end) infinite;
+  }
+
+  .data-live {
+    animation-delay: 0.4s;
+  }
+
+  .titolo {
+    animation-delay: 0.9s;
+  }
+
+  h2 {
+    animation-delay: 1.2s;
+  }
+
+  .frase {
+    animation-delay: 2.2s;
+  }
+
+  .istruzione {
+    animation-delay: 3s;
+  }
+}
+
+/* Il lampo attraversa la scritta in ~0.5s, poi resta fermo */
+
+@keyframes neon {
+  0%, 58% {
+    background-position: 100% 0;
+  }
+
+  66%, 100% {
+    background-position: 0% 0;
+  }
+}
+
+/* Glitch RGB sincronizzato con il passaggio del lampo */
+
+@keyframes glitch-testo {
+  0%, 58% {
+    transform: none;
+    filter: var(--glow);
+  }
+
+  59% {
+    transform: translateX(-3px) skewX(-8deg);
+    filter:
+      drop-shadow(3px 0 var(--neon-magenta))
+      drop-shadow(-3px 0 var(--viola-scuro))
+      brightness(1.6);
+  }
+
+  60% {
+    transform: translateX(3px);
+    filter:
+      drop-shadow(-2px 0 var(--neon-magenta))
+      drop-shadow(2px 0 var(--viola-scuro));
+  }
+
+  61% {
+    transform: none;
+    filter: var(--glow) brightness(2.2);
+  }
+
+  62.5% {
+    transform: translateX(2px) skewX(6deg);
+    filter:
+      drop-shadow(-3px 0 var(--neon-giallo))
+      drop-shadow(3px 0 var(--neon-viola));
+  }
+
+  63.5%, 100% {
+    transform: none;
+    filter: var(--glow);
+  }
+}
+
+/* =========================================
+   FETTE GLITCH (pseudo-elementi su data-testo)
+   Usate da .titolo e .stato-successo
+   ========================================= */
+
+.titolo[data-testo],
+.stato-successo[data-testo] {
+  position: relative;
+}
+
+.titolo[data-testo]::before,
+.titolo[data-testo]::after,
+.stato-successo[data-testo]::before,
+.stato-successo[data-testo]::after {
+  content: attr(data-testo);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  -webkit-background-clip: border-box;
+  background: none;
+  mix-blend-mode: screen;
+  opacity: 0;
+}
+
+.titolo[data-testo]::before,
+.stato-successo[data-testo]::before {
+  color: var(--neon-magenta);
+  -webkit-text-fill-color: var(--neon-magenta);
+}
+
+.titolo[data-testo]::after,
+.stato-successo[data-testo]::after {
+  color: var(--viola-scuro);
+  -webkit-text-fill-color: var(--viola-scuro);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+
+  .titolo[data-testo]::before {
+    animation: fetta-a 6s steps(1, end) 0.9s infinite;
+  }
+
+  .titolo[data-testo]::after {
+    animation: fetta-b 6s steps(1, end) 0.9s infinite;
+  }
+
+  .stato-successo[data-testo]::before {
+    animation: fetta-a 1.6s steps(1, end) 0.3s infinite;
+  }
+
+  .stato-successo[data-testo]::after {
+    animation: fetta-b 1.6s steps(1, end) 0.3s infinite;
+  }
+}
+
+@keyframes fetta-a {
+  0%, 58% {
+    opacity: 0;
+  }
+
+  59% {
+    opacity: 1;
+    clip-path: inset(12% 0 68% 0);
+    transform: translateX(-6px);
+  }
+
+  60.5% {
+    clip-path: inset(55% 0 20% 0);
+    transform: translateX(5px);
+  }
+
+  62% {
+    clip-path: inset(30% 0 52% 0);
+    transform: translateX(-3px);
+  }
+
+  63.5%, 100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fetta-b {
+  0%, 59.5% {
+    opacity: 0;
+  }
+
+  60% {
+    opacity: 1;
+    clip-path: inset(70% 0 8% 0);
+    transform: translateX(6px);
+  }
+
+  61.5% {
+    clip-path: inset(22% 0 60% 0);
+    transform: translateX(-5px);
+  }
+
+  63% {
+    clip-path: inset(45% 0 35% 0);
+    transform: translateX(3px);
+  }
+
+  64%, 100% {
+    opacity: 0;
+  }
+}
+
+/* =========================================
+   RIGA DI ACCESSO (welcome)
+   Dentro la singolarità:  > [ OK ] CONNESSIONE STABILITA █
+   La prima parte resta come prima (.data-live),
+   la seconda è un terminale che si digita a scatti.
+   ========================================= */
+
+.riga-accesso {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.25rem 1ch;
+  margin-bottom: 1rem;
+}
+
+.riga-accesso .data-live {
+  display: inline-block;
+  margin-bottom: 0;
+}
+
+.riga-accesso .terminale {
+  margin-bottom: 0;
+}
+
+.terminale {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.25rem 0.7ch;
+
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+
+  color: #ecdcff;
+  text-shadow:
+    -1px 0 rgba(255, 31, 210, 0.75),
+    1px 0 rgba(176, 38, 255, 0.75),
+    0 0 8px rgba(176, 38, 255, 0.6);
+
+  margin-bottom: 1rem;
+}
+
+.terminale .prompt {
+  color: var(--neon-magenta);
+}
+
+.terminale .ok {
+  color: var(--viola-neon);
+  text-shadow: 0 0 6px var(--viola-neon), 0 0 14px rgba(176, 38, 255, 0.6);
+}
+
+.terminale .digita {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  /* larghezza esatta: n caratteri monospace + spaziatura */
+  width: calc(var(--n) * (1ch + 0.06em));
+}
+
+/* Cursore a blocco */
+
+.terminale .cursore {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.05em;
+  background: var(--viola-neon);
+  box-shadow: 0 0 8px var(--viola-neon);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .terminale {
+    animation: sfarfallio 7s steps(1, end) 2.5s infinite;
+  }
+
+  .terminale .ok {
+    animation: compari 0.01s steps(1, end) 0.25s both;
+  }
+
+  .terminale .digita {
+    animation: digita 1s steps(var(--n), end) 0.4s both;
+  }
+
+  .terminale .cursore {
+    animation: cursore 1s steps(1, end) infinite;
+  }
+}
+
+@keyframes digita {
+  from {
+    width: 0;
+  }
+}
+
+@keyframes compari {
+  from {
+    visibility: hidden;
+  }
+}
+
+@keyframes cursore {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Interferenza: per un istante la riga si sdoppia e salta */
+
+@keyframes sfarfallio {
+  0%, 92% {
+    transform: none;
+    opacity: 1;
+  }
+
+  93% {
+    transform: translateX(-2px);
+    opacity: 0.6;
+    text-shadow:
+      -3px 0 var(--neon-magenta),
+      3px 0 var(--viola-neon);
+  }
+
+  94% {
+    transform: translateX(2px) skewX(-6deg);
+    opacity: 1;
+  }
+
+  95% {
+    transform: none;
+    opacity: 0.4;
+  }
+
+  96%, 100% {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* =========================================
+   PAGINA DI BENVENUTO
+   ========================================= */
+
+.benvenuto {
+  min-height: 82vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-block: 4rem 3rem;
+}
+
+.benvenuto .titolo {
+  margin-bottom: 2.25rem;
+}
+
+/* Orizzonte degli eventi: buio al centro, anello che ruota */
+
+.orizzonte {
+  position: relative;
+  width: clamp(96px, 24vw, 150px);
+  aspect-ratio: 1;
+  margin: 1.75rem auto 2rem;
+}
+
+.orizzonte::before,
+.orizzonte::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+}
+
+/* Disco di luce */
+.orizzonte::before {
+  inset: 0;
+  background: conic-gradient(
+    from 0deg,
+    var(--neon-magenta),
+    var(--viola-neon),
+    var(--oro-chiaro),
+    var(--viola-scuro),
+    var(--neon-rosa),
+    var(--neon-magenta)
+  );
+  -webkit-mask: radial-gradient(circle, transparent 0 33%, #000 36% 46%, transparent 70%);
+  mask: radial-gradient(circle, transparent 0 33%, #000 36% 46%, transparent 70%);
+  filter: blur(1.5px) drop-shadow(0 0 14px rgba(176, 38, 255, 0.8));
+  opacity: 0.9;
+}
+
+/* Il buio, con l'anello di fotoni */
+.orizzonte::after {
+  inset: 33%;
+  background: radial-gradient(circle, #000 0 62%, #07020f 100%);
+  box-shadow:
+    0 0 0 1px rgba(255, 240, 255, 0.55),
+    0 0 10px 2px rgba(176, 38, 255, 0.7),
+    inset 0 0 12px rgba(0, 0, 0, 1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .orizzonte {
+    animation: comparsa 1.6s ease-out 0.2s both;
+  }
+
+  .orizzonte::before {
+    animation: ruota 22s linear infinite;
+  }
+}
+
+@keyframes ruota {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+/* Testo */
+
+.testo-benvenuto {
+  max-width: 34rem;
+  margin-inline: auto;
+}
+
+.prosa {
+  font-style: italic;
+  color: var(--osso-dim);
+  line-height: 1.95;
+}
+
+/* Il "//" come varco tra le due parti */
+.separatore {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-block: 2.25rem;
+
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.95rem;
+  letter-spacing: 0.3em;
+  color: var(--viola-neon);
+  text-shadow: 0 0 8px rgba(176, 38, 255, 0.8);
+}
+
+.separatore::before,
+.separatore::after {
+  content: "";
+  width: 3.5rem;
+  height: 1px;
+}
+
+.separatore::before {
+  background: linear-gradient(90deg, transparent, var(--viola-neon));
+}
+
+.separatore::after {
+  background: linear-gradient(90deg, var(--viola-neon), transparent);
+}
+
+.approdo {
+  font-family: var(--font-etichetta), serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.06em;
+  color: var(--oro-chiaro);
+  filter: drop-shadow(0 0 10px rgba(255, 31, 210, 0.35));
+}
+
+/* Comparsa graduale, in sequenza (--r = ritardo) */
+
+@media (prefers-reduced-motion: no-preference) {
+  .comparsa {
+    animation: comparsa 1.4s ease-out var(--r, 0s) both;
+  }
+}
+
+@keyframes comparsa {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(4px);
+  }
+}
+
+/* =========================================
+   SEZIONI DEL DIARIO
+   ========================================= */
+
+.sezione {
+  padding-block: 3rem;
+}
+
+.corpo {
+  max-width: 38rem;
+}
+
+.pagina {
+  background:
+    linear-gradient(
+      180deg,
+      var(--velluto),
+      rgba(14, 10, 32, 0.6)
+    );
+
+  border: 1px solid rgba(201, 164, 92, 0.3);
+  border-top: 2px solid var(--oro);
+
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.pagina time {
+  display: block;
+
+  font-family: var(--font-etichetta), serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.1em;
+
+  color: var(--oro);
+  margin-bottom: 0.25rem;
+}
+
+.pagina p {
+  color: var(--osso-dim);
+  margin-bottom: 0.75rem;
+}
+
+/* =========================================
+   LETTERE
+   ========================================= */
+
+.lettere {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.voce {
+  background: var(--velluto);
+
+  padding: 2.25rem 1.75rem 1.5rem;
+
+  border: 1px solid;
+  border-radius: 3.5rem 3.5rem 0 0;
+}
+
+.voce p {
+  font-style: italic;
+  margin-bottom: 0.75rem;
+}
+
+.voce footer {
+  font-family: var(--font-etichetta), serif;
+  letter-spacing: 0.1em;
+}
+
+.voce-a {
+  border-color: var(--oro);
+}
+
+.voce-a footer {
+  color: var(--oro);
+}
+
+.voce-b {
+  border-color: var(--lilla);
+}
+
+.voce-b footer {
+  color: var(--lilla);
+}
+
+
+
+@media (min-width: 40rem) {
+  .lettere {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .voce-b {
+    margin-top: 2rem;
+  }
+}
+
+/* =========================================
+   PIEDE
+   ========================================= */
+
+.piede {
+  padding-block: 2rem 4rem;
+
+  text-align: center;
+
+  font-family: var(--font-etichetta), serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.06em;
+
+  color: var(--osso-dim);
+}
+
+.piede::before {
+  content: "☽  ✦  ☉";
+
+  display: block;
+
+  color: var(--oro);
+  letter-spacing: 0.6em;
+  margin-bottom: 1rem;
+}
+
+/* =========================================
+   ACCESSIBILITÀ
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+
+  .stella {
+    opacity: 1 !important;
+  }
+
+  .costellazione > line {
+    stroke-dashoffset: 0;
+    opacity: 0.4;
+  }
+
+  .cancello[data-success="true"] .costellazione > line {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+
+  .titolo::before,
+  .titolo::after,
+  .stato-successo::before,
+  .stato-successo::after {
+    display: none;
+  }
+}
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 480px) {
+
+  .cancello {
+    padding-block: 2rem;
+    gap: 1.25rem;
+  }
+
+  .costellazione {
+    width: min(82vw, 290px);
+  }
+
+  .frase {
+    font-size: 1.8rem;
+  }
+
+  .frase input {
+    max-width: 190px;
+  }
+
+  .istruzione {
+    font-size: 0.95rem;
+  }
 }
